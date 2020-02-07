@@ -4,6 +4,7 @@ import (
 	"context"
 	goerrors "errors"
 	"fmt"
+
 	maupuv1beta1 "github.com/nmaupu/vault-secret/pkg/apis/maupu/v1beta1"
 	nmvault "github.com/nmaupu/vault-secret/pkg/vault"
 	corev1 "k8s.io/api/core/v1"
@@ -177,6 +178,10 @@ func newSecretForCR(cr *maupuv1beta1.VaultSecret) (*corev1.Secret, error) {
 		"crName":      cr.Name,
 		"crNamespace": cr.Namespace,
 		"controller":  ControllerName,
+	}
+	// Adding VaultSecret labels
+	for key, val := range cr.GetObjectMeta().GetLabels() {
+		labels[key] = val
 	}
 	// Adding filtered labels
 	for key, val := range LabelsFilter {
